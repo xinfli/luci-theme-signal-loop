@@ -46,7 +46,7 @@ interface.
 | Tab bar | Blue submenu bar with rounded tab pills and an orange active tab |
 | Forms | Compact Verdana inputs, blue focus rings, DD-WRT style action bar |
 | Footer | LuCI / distribution credits plus the theme credit and mode menu |
-| Login | Centered charcoal dialog with the wordmark above it |
+| Login | Centered charcoal dialog with the router hostname and Signal Loop icon above it |
 
 ## Requirements
 
@@ -114,9 +114,10 @@ standard LuCI variables (`--background-color-medium`, `--text-color-high`,
 `--border-color-medium`, `--primary-color-high`, …) and the `data-darkmode`
 attribute.
 
-`logo.svg` (login wordmark), `icon.svg` (header logo) and the favicons share
-the same signal-loop artwork; the PNG/ICO files are only rasterized copies for
-browsers and operating systems that do not use the SVG icons.
+`icon.svg` provides the Signal Loop mark used by the header and login brand,
+`logo.svg` is the standalone wordmark, and the favicons share the same
+artwork; the PNG/ICO files are only rasterized copies for browsers and
+operating systems that do not use the SVG icons.
 
 ## Credits
 

@@ -537,9 +537,13 @@ header .brand-logo {
 	}
 
 	body.blank-page #modal_overlay::before {
-		width: 180px;
-		height: 36px;
+		max-width: 90%;
+		min-height: 36px;
 		margin-top: 3vh;
+		padding-left: 46px;
+		background-size: 36px 36px;
+		font-size: 18px;
+		line-height: 36px;
 	}
 
 	body.blank-page .modal.login {

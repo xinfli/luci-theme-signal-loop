@@ -7,6 +7,12 @@ return view.extend({
 		const form = document.querySelector('form');
 		const btn = document.querySelector('button');
 
+		const hostname = document.body.dataset.hostname || 'OpenWrt';
+		const overlay = document.getElementById('modal_overlay');
+
+		if (overlay)
+			overlay.dataset.hostname = hostname;
+
 		const dlg = ui.showModal(
 			_('Authorization Required'),
 			Array.from(document.querySelectorAll('section > *')),
