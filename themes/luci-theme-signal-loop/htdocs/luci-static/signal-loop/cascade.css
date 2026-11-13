@@ -2910,8 +2910,19 @@ header .nav a.menu::after {
 }
 
 header .nav .dropdown-menu {
-	top: 38px;
+	top: 32px;
 	background-color: #3d3d3d;
+}
+
+/* Transparent bridge so moving the pointer from the button to the menu does
+ * not cross a dead zone that would clear `li.dropdown:hover`. */
+header .nav .dropdown-menu::before {
+	content: "";
+	position: absolute;
+	top: -8px;
+	left: 0;
+	right: 0;
+	height: 8px;
 }
 
 header .pull-right {
