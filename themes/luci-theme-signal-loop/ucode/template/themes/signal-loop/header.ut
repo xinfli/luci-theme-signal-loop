@@ -51,11 +51,8 @@
 		{% if (!blank_page): %}
 		<header>
 			<a class="brand" href="/">
-				<img class="brand-logo" src="{{ media }}/logo.svg" alt="signal-loop" width="208" height="40">
-				<span class="brand-host">
-					<span class="brand-led" aria-hidden="true"></span>
-					<span class="brand-hostname">{{ striptags(boardinfo.hostname ?? '?') }}</span>
-				</span>
+				<img class="brand-logo" src="{{ media }}/icon.svg" alt="" width="34" height="34">
+				<span class="brand-name">{{ striptags(boardinfo.hostname ?? '?') }}</span>
 			</a>
 			<ul class="nav" id="topmenu" style="display:none"></ul>
 			<div id="indicators" class="pull-right"></div>
