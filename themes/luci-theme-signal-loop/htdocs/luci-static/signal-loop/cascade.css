@@ -2624,3 +2624,1145 @@ div.cbi-value var.cbi-tooltip-container,
 	stroke: var(--text-color-highest)!important;
 }
 
+/* ==========================================================================
+ * Signal Loop skin
+ * --------------------------------------------------------------------------
+ * The rules above are the complete official LuCI Bootstrap theme. Everything
+ * below re-skins that scaffold after dd-wrt.com:
+ *
+ *   - charcoal surfaces (#1a1a1a / #3d3d3d / #474747 / #5a5a5a)
+ *   - steel-blue gradient navigation and buttons (#318cd8 -> #1c5382)
+ *   - orange highlights and active states (#f87b0b -> #e76e01)
+ *   - compact Verdana typography and small uppercase status labels
+ *   - dotted "signal" grid in the header and modal backdrop
+ *
+ * Keeping the Bootstrap base intact means every stock LuCI view, CBI widget
+ * and optional module continues to work without markup changes.
+ * ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * Design tokens
+ * ----------------------------------------------------------------------- */
+:root,
+:root[data-darkmode="true"] {
+	--background-color-delta-l-sign: 1;
+	--background-color-h: 0;
+	--background-color-s: 0%;
+	--background-color-l: 10%;
+
+	--background-color-high-hsl: 0, 0%, 10%;
+	--background-color-high: #1a1a1a;
+	--background-color-medium-hsl: 0, 0%, 18%;
+	--background-color-medium: #2e2e2e;
+	--background-color-low-hsl: 0, 0%, 24%;
+	--background-color-low: #3d3d3d;
+
+	--text-color-delta-l-sign: -1;
+	--text-color-h: 0;
+	--text-color-s: 0%;
+	--text-color-l: 100%;
+
+	--text-color-highest-hsl: 0, 0%, 100%;
+	--text-color-highest: #ffffff;
+	--text-color-high-hsl: 0, 0%, 91%;
+	--text-color-high: #e8e8e8;
+	--text-color-medium-hsl: 0, 0%, 78%;
+	--text-color-medium: #c7c7c7;
+	--text-color-low-hsl: 0, 0%, 63%;
+	--text-color-low: #a0a0a0;
+
+	--border-color-high-hsl: 0, 0%, 47%;
+	--border-color-high: #777777;
+	--border-color-medium-hsl: 0, 0%, 37%;
+	--border-color-medium: #5f5f5f;
+	--border-color-low-hsl: 0, 0%, 29%;
+	--border-color-low: #4a4a4a;
+
+	--primary-color-high: #318cd8;
+	--primary-color-medium: #2874b4;
+	--primary-color-low: #1c5382;
+	--on-primary-color: #ffffff;
+
+	--error-color-high-rgb: 255, 73, 31;
+	--error-color-high: #ff491f;
+	--error-color-medium: #d3272d;
+	--error-color-low: #9e1f24;
+	--on-error-color: #ffffff;
+
+	--success-color-high-rgb: 43, 206, 56;
+	--success-color-high: #2bce38;
+	--success-color-medium: #22a82c;
+	--success-color-low: #187a20;
+	--on-success-color: #ffffff;
+
+	--warn-color-high: #ffa53c;
+	--warn-color-medium: #f87b0b;
+	--warn-color-low: #e76e01;
+	--on-warn-color: #ffffff;
+
+	--disabled-opacity: .45;
+
+	--font-sans: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	--font-mono: "DejaVu Sans Mono", Monaco, "Courier New", ui-monospace, monospace;
+
+	color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+ * Base / scaffolding
+ * ----------------------------------------------------------------------- */
+html {
+	background: #101010;
+}
+
+body {
+	background-color: #1a1a1a;
+	background-image:
+		radial-gradient(ellipse at 50% -20%, rgba(49, 140, 216, .14), transparent 60%),
+		linear-gradient(rgba(255, 255, 255, .018) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(255, 255, 255, .018) 1px, transparent 1px);
+	background-size: auto, 48px 48px, 48px 48px;
+	color: var(--text-color-high);
+	font-family: var(--font-sans);
+	font-size: 12px;
+	line-height: 18px;
+}
+
+a {
+	color: #318cd8;
+}
+
+a:hover,
+a:focus {
+	color: #55afff;
+}
+
+p,
+.cbi-map-descr,
+.cbi-section-descr,
+.table .tr.cbi-section-table-descr .th {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+h1 {
+	font-size: 22px;
+	line-height: 28px;
+}
+
+h2 {
+	font-size: 16px;
+	line-height: 24px;
+}
+
+h3, legend {
+	font-size: 13px;
+	line-height: 20px;
+}
+
+h4 {
+	font-size: 13px;
+}
+
+h5 {
+	font-size: 12px;
+}
+
+h6 {
+	font-size: 10px;
+	letter-spacing: .1em;
+}
+
+hr {
+	border-bottom-color: #4a4a4a;
+}
+
+code {
+	background-color: #2e2e2e;
+	color: #d9ecff;
+}
+
+pre {
+	background-color: #2b2b2b;
+	border-color: #4a4a4a;
+	color: #d9ecff;
+}
+
+/* --------------------------------------------------------------------------
+ * Header: the DD-WRT "signal field" - dark blue gradient with a dot grid,
+ * steel-blue pill navigation and an orange base line.
+ * ----------------------------------------------------------------------- */
+header {
+	align-items: center;
+	min-height: 64px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	margin: -5px -5px 15px -5px;
+	color: #d5d5d5;
+	background-color: #0b0f14;
+	background-image:
+		radial-gradient(circle, rgba(96, 180, 255, .16) 1px, transparent 1.4px),
+		radial-gradient(ellipse at 50% 120%, rgba(49, 140, 216, .45), transparent 70%),
+		linear-gradient(180deg, #080b0f 0%, #0d2338 45%, #2b6a9b 100%);
+	background-size: 4px 4px, auto, auto;
+	border-bottom: 2px solid #e76e01;
+	box-shadow: 0 3px 12px rgba(0, 0, 0, .65), inset 0 -1px 0 rgba(255, 255, 255, .06);
+}
+
+header a {
+	color: #d5d5d5;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, .5);
+}
+
+header a:hover {
+	color: #ffffff;
+}
+
+header .brand {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin-left: 0;
+	padding: 6px 20px;
+	color: #ffffff;
+	font-size: 18px;
+	font-weight: normal;
+	line-height: 1;
+	text-decoration: none;
+}
+
+header .brand:hover,
+header .brand:focus {
+	background: transparent;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+header .brand-logo {
+	display: block;
+	width: 208px;
+	height: auto;
+	max-height: 40px;
+}
+
+header .brand-host {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 5px 10px;
+	border: 1px solid #3387ce;
+	border-radius: 4px;
+	background: linear-gradient(#206095, #1a4f7b);
+	color: #eaf6ff;
+	font-size: 10px;
+	text-transform: uppercase;
+	letter-spacing: .12em;
+	text-shadow: none;
+}
+
+header .brand-led {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #2bce38;
+	box-shadow: 0 0 6px #2bce38, inset 0 0 2px #b9ffbf;
+}
+
+header .brand-hostname {
+	max-width: 22ch;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+header .nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	float: none;
+	left: 0;
+	margin: 0 10px 0 18px;
+	padding: 0;
+}
+
+header .nav > li {
+	display: flex;
+	float: none;
+	margin: 0;
+}
+
+header .nav a {
+	display: block;
+	float: none;
+	padding: 6px 12px;
+	line-height: 18px;
+	border: 1px solid #3387ce;
+	border-radius: 4px;
+	background: linear-gradient(#206095, #1a4f7b);
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, .45);
+}
+
+header .nav a:hover,
+header .nav a:focus {
+	background: linear-gradient(#318cd8, #2874b4);
+	border-color: #55afff;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+header .nav .active > a {
+	background: linear-gradient(#f87b0b, #e76e01);
+	border-color: #efa03b;
+	color: #ffffff;
+	box-shadow: 0 0 8px rgba(240, 113, 0, .35);
+}
+
+header .nav a.menu::after {
+	border-top-color: #ffffff;
+	opacity: .8;
+}
+
+header .nav .dropdown-menu {
+	top: 38px;
+	background-color: #3d3d3d;
+}
+
+header .pull-right {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 4px;
+	margin-left: auto;
+	margin-right: 5px;
+}
+
+/* Dropdown menus in the header */
+.dropdown-menu {
+	background-color: #3d3d3d;
+	border: 1px solid #686868;
+	border-top: 1px solid #318cd8;
+	border-radius: 0 0 4px 4px;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, .6);
+}
+
+.dropdown-menu a,
+.nav .dropdown-menu li a {
+	color: #d5d5d5;
+	text-shadow: none;
+}
+
+.dropdown-menu a:hover,
+.nav .dropdown-menu li a:hover {
+	background: linear-gradient(#318cd8, #2874b4);
+	color: #ffffff;
+	box-shadow: none;
+	text-decoration: none;
+}
+
+.nav .dropdown-menu .active > a,
+.dropdown-menu .active > a {
+	background: linear-gradient(#f87b0b, #e76e01);
+	color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+ * Content panel
+ * ----------------------------------------------------------------------- */
+#maincontent.container {
+	width: 100%;
+	max-width: 1180px;
+	padding: 18px 20px 10px;
+	margin-top: 0;
+	margin-bottom: 18px;
+	background: #3d3d3d;
+	border: 1px solid #575757;
+	border-radius: 4px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+/* DD-WRT style page and section headings */
+.cbi-map > h2,
+#view > .cbi-map > h2 {
+	padding: 3px 8px;
+	margin-bottom: 16px;
+	border: 1px solid #888888;
+	border-radius: 4px;
+	background: #5a5a5a;
+	color: #eb760e;
+	font-size: 13px;
+	font-weight: bold;
+	line-height: 20px;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+}
+
+.cbi-map > h2 small {
+	color: #d2d2d2;
+	font-size: 10px;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.cbi-section > h3,
+.cbi-section-node > h3,
+.cbi-section-create > h3 {
+	padding-bottom: 4px;
+	margin: 8px 0 10px;
+	border-bottom: 1px dotted #318cd8;
+	color: #eb760e;
+	font-size: 12px;
+	line-height: 20px;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+ * Tabs: blue submenu bar with rounded DD-WRT tab pills and an orange active
+ * state. Applies to both the theme tab menu and CBI tab groups.
+ * ----------------------------------------------------------------------- */
+.tabs,
+.cbi-tabmenu {
+	--tab-active-background-color: #e76e01;
+	--tab-active-text-color: #ffffff;
+	--tab-active-border-color: #efa03b;
+	--tab-inactive-background-color: #1c5382;
+	--tab-inactive-text-color: #dcebf8;
+	--tab-inactive-border-color: #3387ce;
+	--tab-inactive-hover-background-color: #2874b4;
+
+	gap: 4px;
+	min-height: 34px;
+	margin: 0 0 18px;
+	padding: 4px 6px;
+	background: linear-gradient(#2874b4, #256aa5);
+	background-size: auto;
+	border: 1px solid #318cd8;
+	border-radius: 0 0 4px 4px;
+}
+
+.tabs > li,
+.cbi-tabmenu > li {
+	height: 26px;
+	margin: 0;
+	border: 1px solid #3387ce;
+	border-radius: 4px;
+	background: linear-gradient(#206095, #1a4f7b);
+	color: #dcebf8;
+}
+
+.tabs > li > a,
+.cbi-tabmenu > li > a {
+	padding: 0 10px;
+	line-height: 24px;
+	border-radius: 4px;
+	color: #dcebf8;
+}
+
+.tabs > li:not(.active),
+.cbi-tabmenu > li:not(.active) {
+	background: linear-gradient(#2b6a9b, #1c5382);
+	border-color: #3387ce;
+	color: #dcebf8;
+}
+
+.tabs > li:not(.active):hover,
+.cbi-tabmenu > li:not(.active):hover {
+	background: linear-gradient(#318cd8, #2874b4);
+}
+
+.tabs > li.active,
+.cbi-tabmenu > li.active,
+.cbi-tabmenu > li.cbi-tab {
+	border-color: #efa03b;
+	background: linear-gradient(#f87b0b, #e76e01);
+	color: #ffffff;
+	box-shadow: 0 0 8px rgba(240, 113, 0, .35);
+}
+
+.tabs > li.active > a,
+.cbi-tabmenu > li.active > a,
+.cbi-tabmenu > li.cbi-tab > a {
+	color: #ffffff;
+	font-weight: bold;
+}
+
+/* The CBI tab renderer marks the selected tab with `cbi-tab` rather than
+ * `active`, so repeat the active rules with enough specificity to beat the
+ * `:not(.active)` inactive rules above. */
+.tabs > li.cbi-tab,
+.cbi-tabmenu > li.cbi-tab {
+	border-color: #efa03b;
+	background: linear-gradient(#f87b0b, #e76e01);
+	color: #ffffff;
+	box-shadow: 0 0 8px rgba(240, 113, 0, .35);
+}
+
+.tabs > li.cbi-tab > a,
+.cbi-tabmenu > li.cbi-tab > a {
+	color: #ffffff;
+	font-weight: bold;
+}
+
+.cbi-tabmenu.map > li {
+	font-size: 14px;
+}
+
+.cbi-tabmap {
+	margin: 0;
+}
+
+.cbi-tab-descr {
+	margin: -9px 0 18px;
+	color: var(--text-color-medium);
+}
+
+/* --------------------------------------------------------------------------
+ * Breadcrumbs (mode menu in the footer and inline breadcrumbs)
+ * ----------------------------------------------------------------------- */
+.breadcrumb {
+	padding: 4px 10px;
+	margin: 0 0 18px;
+	background: linear-gradient(#2874b4, #256aa5);
+	border: 1px solid #318cd8;
+	border-radius: 4px;
+	color: #ffffff;
+}
+
+.breadcrumb li {
+	color: #dcebf8;
+}
+
+.breadcrumb a {
+	color: #ffffff;
+}
+
+.breadcrumb a:hover {
+	color: #ffffff;
+	text-decoration: underline;
+}
+
+.breadcrumb li:not(:last-child)::after {
+	content: "|";
+	padding: 0 6px;
+	color: #9fc7e8;
+}
+
+.breadcrumb .active a {
+	padding: 1px 7px;
+	border-radius: 3px;
+	background: #e76e01;
+	color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+ * Forms
+ * ----------------------------------------------------------------------- */
+input,
+textarea,
+select,
+.cbi-select,
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	background: #555555;
+	color: #eeeeee;
+	border: 1px solid #666666;
+	border-radius: 3px;
+	font-size: 12px;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.cbi-select:focus,
+.cbi-dropdown:focus,
+.cbi-dropdown[open] {
+	border-color: #55afff !important;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2), 0 0 7px rgba(85, 175, 255, .55);
+}
+
+::placeholder {
+	color: #aaaaaa;
+}
+
+select[multiple] {
+	background-color: #555555;
+}
+
+.cbi-select,
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	background: linear-gradient(#5a5a5a, #4a4a4a);
+}
+
+.cbi-select::before {
+	background: linear-gradient(#5a5a5a, #4a4a4a);
+	border-radius: 3px;
+}
+
+.cbi-select select option,
+.cbi-dropdown[open] > ul.dropdown {
+	background: #3d3d3d;
+	color: #eeeeee;
+}
+
+.cbi-select select option:hover,
+.cbi-dropdown[open] > ul.dropdown > li:hover {
+	background: #318cd8;
+	color: #ffffff;
+}
+
+.cbi-select select option:checked,
+.cbi-dropdown[open] > ul.dropdown > li[selected] {
+	background: #1c5382;
+	color: #ffffff;
+}
+
+.cbi-dynlist > .item {
+	background: #555555;
+	border-color: #666666;
+	color: #eeeeee;
+	box-shadow: none;
+}
+
+.cbi-dynlist > .item::after {
+	background: #4a4a4a;
+	border-color: #666666;
+	color: #ff7a66;
+}
+
+.cbi-value label.cbi-value-title {
+	color: #d5d5d5;
+	font-weight: bold;
+}
+
+.cbi-value-description {
+	color: #adadad;
+}
+
+input[type="checkbox"]::before,
+input[type="radio"]::before {
+	background: linear-gradient(#5a5a5a, #4a4a4a);
+	border-color: #777777;
+}
+
+input[type="checkbox"]:checked::after,
+input[type="radio"]:checked::after {
+	background: #55afff;
+}
+
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	border-color: #666666;
+	background: #4a4a4a;
+}
+
+/* --------------------------------------------------------------------------
+ * Buttons
+ * ----------------------------------------------------------------------- */
+.btn,
+.cbi-button {
+	padding: 0 14px;
+	border: 1px solid #3387ce;
+	border-radius: 4px;
+	background: linear-gradient(#318cd8, #2874b4);
+	color: #ffffff;
+	font-weight: bold;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, .35);
+}
+
+.btn:hover,
+.btn:focus,
+.cbi-button:hover,
+.cbi-button:focus {
+	border-color: #55afff !important;
+	background: linear-gradient(#3da0ee, #2b7fc4);
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.btn:active,
+.cbi-button:active {
+	background: linear-gradient(#2874b4, #1c5382);
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, .35);
+}
+
+/* neutral actions: muted steel */
+.cbi-button-neutral,
+.cbi-button-download,
+.cbi-button-find,
+.cbi-button-link,
+.cbi-button-up,
+.cbi-button-down {
+	border-color: #7a7a7a;
+	background: linear-gradient(#6a6a6a, #555555);
+	color: #ffffff;
+}
+
+/* positive actions: DD-WRT signal green */
+.cbi-button-positive,
+.cbi-button-fieldadd,
+.cbi-button-add,
+.cbi-button-save,
+.btn.success {
+	border-color: #2bce38;
+	background: linear-gradient(#2bce38, #187a20);
+	color: #ffffff;
+}
+
+.cbi-button-positive:hover,
+.cbi-button-fieldadd:hover,
+.cbi-button-add:hover,
+.cbi-button-save:hover,
+.btn.success:hover {
+	border-color: #6bff75 !important;
+	background: linear-gradient(#38e044, #1e9e2a);
+}
+
+/* destructive actions: DD-WRT alert red */
+.cbi-button-negative,
+.cbi-section-remove .cbi-button,
+.cbi-button-reset,
+.cbi-button-remove,
+.btn.danger,
+.btn.error,
+.btn.negative {
+	border-color: #ff491f;
+	background: linear-gradient(#d3272d, #9e1f24);
+	color: #ffffff;
+}
+
+.cbi-button-negative:hover,
+.cbi-section-remove .cbi-button:hover,
+.cbi-button-reset:hover,
+.cbi-button-remove:hover,
+.btn.danger:hover,
+.btn.error:hover {
+	border-color: #ff8566 !important;
+	background: linear-gradient(#e63a35, #b3262c);
+}
+
+/* primary / apply actions: DD-WRT blue, orange on hover */
+.btn.primary,
+.cbi-button-action,
+.cbi-button-apply,
+.cbi-button-reload,
+.cbi-button-edit {
+	border-color: #3387ce;
+	background: linear-gradient(#318cd8, #2874b4);
+	color: #ffffff;
+}
+
+.btn.primary:hover,
+.btn.primary:focus,
+.cbi-button-action:hover,
+.cbi-button-action:focus,
+.cbi-button-apply:hover,
+.cbi-button-apply:focus,
+.cbi-button-reload:hover,
+.cbi-button-edit:hover {
+	border-color: #efa03b !important;
+	background: linear-gradient(#f87b0b, #e76e01);
+}
+
+.cbi-page-actions .cbi-button-apply,
+.cbi-button-action.important,
+.cbi-button-positive.important,
+.cbi-button-negative.important,
+.cbi-page-actions .cbi-button-save {
+	font-weight: bold;
+}
+
+.cbi-button-action.important,
+.cbi-page-actions .cbi-button-apply {
+	background: linear-gradient(#318cd8, #2874b4);
+	border-color: #3387ce;
+	color: #ffffff;
+}
+
+.cbi-page-actions .cbi-button-apply:hover {
+	background: linear-gradient(#f87b0b, #e76e01);
+	border-color: #efa03b;
+}
+
+.cbi-button-positive.important,
+.cbi-page-actions .cbi-button-save {
+	background: linear-gradient(#2bce38, #187a20);
+	border-color: #2bce38;
+	color: #ffffff;
+}
+
+.cbi-button-negative.important {
+	background: linear-gradient(#d3272d, #9e1f24);
+	border-color: #ff491f;
+	color: #ffffff;
+}
+
+.btn.active,
+.btn:active {
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, .35);
+}
+
+.btn.disabled,
+.btn[disabled] {
+	opacity: var(--disabled-opacity);
+	box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+ * Tables
+ * ----------------------------------------------------------------------- */
+.table {
+	font-size: 12px;
+}
+
+.table .tr:first-child .th {
+	padding-top: 9px;
+	border-top: none;
+	border-bottom: 1px dotted #318cd8;
+	background: #474747;
+	color: #ffffff;
+}
+
+.table .td,
+.table .th {
+	border-top: 1px solid #4a4a4a;
+}
+
+.table a {
+	color: #55afff;
+}
+
+.cbi-rowstyle-1 {
+	background: #3d3d3d;
+}
+
+.cbi-rowstyle-2,
+.tr.table-titles,
+.tr.cbi-section-table-titles {
+	background: #474747;
+}
+
+.cbi-section-table .tr:hover .td,
+.cbi-section-table .tr:hover .th,
+.cbi-section-table .tr:hover::before {
+	background-color: #5a5a5a;
+}
+
+.td.cbi-section-actions {
+	text-align: right;
+}
+
+/* --------------------------------------------------------------------------
+ * Alerts, labels and status indicators
+ * ----------------------------------------------------------------------- */
+.alert-message {
+	padding: .6em .8em .45em;
+	border-radius: 4px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+}
+
+.alert-message.notice {
+	border-color: #686868;
+	background: linear-gradient(#4a4a4a, #3d3d3d);
+	color: #e8e8e8;
+}
+
+.alert-message.warning {
+	border-color: #ffa53c #ffa53c #c35a00;
+	background: linear-gradient(#f87b0b, #e76e01);
+	color: #ffffff;
+}
+
+.alert-message.danger,
+.alert-message.error {
+	border-color: #ff491f #ff491f #9e1f24;
+	background: linear-gradient(#d3272d, #9e1f24);
+	color: #ffffff;
+}
+
+.alert-message.success {
+	border-color: #2bce38 #2bce38 #187a20;
+	background: linear-gradient(#22a82c, #187a20);
+	color: #ffffff;
+}
+
+.alert-message.info {
+	border-color: #318cd8 #318cd8 #1c5382;
+	background: linear-gradient(#2874b4, #1c5382);
+	color: #ffffff;
+}
+
+.label,
+header [data-indicator] {
+	padding: 2px 4px;
+	border: 1px solid #3387ce;
+	border-radius: 3px;
+	background-color: #1c5382;
+	color: #cfe8ff;
+	font-size: 9.75px;
+	font-weight: bold;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	text-shadow: none;
+}
+
+.label.important,
+.label.notice,
+header [data-indicator][data-style="active"] {
+	border-color: #3387ce;
+	background-color: #318cd8;
+	color: #ffffff;
+}
+
+.label.warning {
+	border-color: #ffa53c;
+	background-color: #e76e01;
+	color: #ffffff;
+}
+
+.label.success {
+	border-color: #2bce38;
+	background-color: #187a20;
+	color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+ * Modal dialogs and the Bootstrap-style login
+ * ----------------------------------------------------------------------- */
+#modal_overlay {
+	background-color: rgba(0, 0, 0, .78);
+	background-image: radial-gradient(circle, rgba(96, 180, 255, .08) 1px, transparent 1.4px);
+	background-size: 4px 4px;
+}
+
+.modal {
+	background: #3d3d3d;
+	border: 1px solid #686868;
+	border-radius: 5px;
+	box-shadow: 0 12px 40px rgba(0, 0, 0, .7);
+}
+
+.modal > h4 {
+	padding-bottom: 6px;
+	margin-bottom: .75em;
+	border-bottom: 1px dotted #318cd8;
+	color: #eb760e;
+	font-size: 13px;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+.modal.login {
+	max-width: 560px;
+	border-top: 3px solid #f07100;
+}
+
+.modal.login .cbi-map,
+.modal.login .cbi-section,
+.modal.login .cbi-section-node {
+	margin: 0;
+}
+
+.modal.login .cbi-value {
+	margin-bottom: 14px;
+}
+
+.modal.login .cbi-value label.cbi-value-title {
+	color: #d5d5d5;
+}
+
+.modal.login .login-submit {
+	width: 100%;
+	margin-top: .5em;
+	border-color: #efa03b;
+	background: linear-gradient(#f87b0b, #e76e01);
+	color: #ffffff;
+	font-size: 110%;
+}
+
+.modal.login .login-submit:hover {
+	background: linear-gradient(#ff8d1c, #f07100);
+	border-color: #ffb45c !important;
+}
+
+body.modal-overlay-active #modal_overlay {
+	background-color: rgba(0, 0, 0, .78);
+}
+
+body.blank-page {
+	background-image:
+		radial-gradient(ellipse at 50% 0%, rgba(49, 140, 216, .24), transparent 65%),
+		radial-gradient(circle, rgba(96, 180, 255, .10) 1px, transparent 1.4px),
+		linear-gradient(180deg, #0a0f14 0%, #1a1a1a 70%);
+	background-size: auto, 4px 4px, auto;
+}
+
+body.blank-page header {
+	margin-bottom: 0;
+}
+
+/* Bootstrap hides the header entirely on blank pages (login), so draw the
+ * wordmark above the login dialog with a pseudo element. */
+body.blank-page #modal_overlay::before {
+	content: "";
+	display: block;
+	width: 224px;
+	height: 44px;
+	margin: 4vh auto 0;
+	background: url("logo.svg") center / contain no-repeat;
+	pointer-events: none;
+}
+
+body.blank-page .modal.login {
+	margin-top: 4vh;
+}
+
+/* --------------------------------------------------------------------------
+ * Page actions, sections and miscellaneous widgets
+ * ----------------------------------------------------------------------- */
+.actions,
+.cbi-page-actions {
+	padding: 10px 12px;
+	margin-top: 18px;
+	background: #474747;
+	border-top: 1px solid #686868;
+	border-radius: 0 0 4px 4px;
+}
+
+.cbi-section-error {
+	border-color: #ff491f;
+	background-color: #4a2020;
+}
+
+.cbi-section-error ul li {
+	color: #ff8a73;
+}
+
+.cbi-progressbar {
+	height: 10px;
+	border-color: #686868;
+	background: #2b2b2b;
+}
+
+.cbi-progressbar > div {
+	background: linear-gradient(#55afff, #2874b4);
+}
+
+.cbi-tooltip {
+	background: #2b2b2b;
+	border: 1px solid #686868;
+	box-shadow: 0 2px 6px #000000;
+	color: #e8e8e8;
+}
+
+.ifacebox {
+	border-color: #686868;
+	background: linear-gradient(#4a4a4a, #3d3d3d);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+.ifacebox .ifacebox-head {
+	background: #5a5a5a;
+	border-bottom-color: #686868;
+	color: #e8e8e8;
+}
+
+.ifacebox .ifacebox-head.active {
+	background: linear-gradient(#318cd8, #1c5382);
+	color: #ffffff;
+}
+
+.ifacebadge {
+	border-color: #686868;
+	background: linear-gradient(#4a4a4a, #3d3d3d);
+	color: #e8e8e8;
+	text-shadow: none;
+}
+
+.zonebadge {
+	color: #e8e8e8;
+	text-shadow: none;
+}
+
+.zonebadge-empty {
+	border-color: #777777;
+	color: #999999;
+}
+
+#syslog {
+	color: #b8e0ff;
+}
+
+.cbi-title-ref {
+	color: #55afff;
+}
+
+div.cbi-value var,
+.td.cbi-value-field var {
+	color: #55afff;
+}
+
+div.cbi-value var[data-tooltip],
+.td.cbi-value-field var[data-tooltip] {
+	border-bottom-color: #55afff;
+}
+
+/* --------------------------------------------------------------------------
+ * Footer
+ * ----------------------------------------------------------------------- */
+footer {
+	padding-top: 14px;
+	padding-bottom: 20px;
+	border-top: 1px solid #575757;
+	color: #adadad;
+	font-size: 11px;
+}
+
+footer a {
+	color: #318cd8;
+}
+
+footer a:hover {
+	color: #55afff;
+}
+
+footer span {
+	margin-bottom: .75em;
+}
+
+footer .theme-credit {
+	color: #8a8a8a;
+	font-size: 10px;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+footer .theme-credit-sep {
+	color: #f07100;
+}
+
+footer ul.breadcrumb {
+	margin-bottom: 0;
+}
+
+/* The DD-WRT-inspired horizontal rule under the header is intentionally
+ * orange, so keep focus outlines and drag markers in the same family. */
+.tr.drag-over-above,
+.tr.drag-over-below {
+	border-top-color: #f07100;
+	border-bottom-color: #f07100;
+}
+
+.cbi-dynlist > .item.drag-over,
+.cbi-dynlist > .add-item > .cbi-input-text.drag-over,
+.cbi-dynlist > .add-item > .cbi-button-add.drag-over {
+	border-top-color: #f07100;
+}
+
+/* Keep the spinner readable on the dark login overlay. */
+[data-darkmode="true"] .spinning::before,
+body.blank-page .spinning::before {
+	background: #e8e8e8;
+}
