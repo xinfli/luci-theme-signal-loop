@@ -1,0 +1,18 @@
+# Build output
+dist/
+*.apk
+*.ipk
+*.ipk.gz
+
+# OpenWrt build leftovers
+*.o
+*.a
+uc.out
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
