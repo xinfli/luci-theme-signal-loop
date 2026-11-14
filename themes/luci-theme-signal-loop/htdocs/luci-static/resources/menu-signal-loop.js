@@ -5,9 +5,11 @@
  * Derived from the official LuCI Bootstrap theme (luci-theme-bootstrap),
  * licensed under the Apache License 2.0.
  *
- * The only functional difference is that the current top-level menu entry
- * and the current submenu entry receive an `active` class so the DD-WRT
- * inspired blue/orange navigation can highlight them.
+ * In addition to the official renderer, the current top-level menu entry and
+ * the current submenu entry receive an `active` class so the DD-WRT inspired
+ * blue/orange navigation can highlight them. Dropdown buttons are also handled
+ * explicitly so that a touch tap only opens the menu instead of following the
+ * first entry that appears underneath the finger.
  */
 'use strict';
 'require baseclass';
@@ -16,6 +18,37 @@
 return baseclass.extend({
 	__init__() {
 		ui.menu.load().then((tree) => this.render(tree));
+		document.addEventListener('click', L.bind(this.handleMenuClick, this));
+	},
+
+	/* On touch screens a tap on a dropdown button must only open the menu.
+	 * Without this handler the browser applies the CSS hover state first, the
+	 * menu appears under the finger and the same tap activates its first item. */
+	handleMenuClick(ev) {
+		const topmenu = document.querySelector('#topmenu');
+
+		if (!topmenu)
+			return;
+
+		const toggle = ev.target.closest ? ev.target.closest('#topmenu a.menu') : null;
+
+		if (toggle) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			const item = toggle.parentNode;
+			const open = item.classList.contains('open');
+
+			topmenu.querySelectorAll('li.dropdown.open').forEach(li => li.classList.remove('open'));
+
+			if (!open)
+				item.classList.add('open');
+
+			return;
+		}
+
+		if (!ev.target.closest || !ev.target.closest('#topmenu .dropdown-menu'))
+			topmenu.querySelectorAll('li.dropdown.open').forEach(li => li.classList.remove('open'));
 	},
 
 	render(tree) {

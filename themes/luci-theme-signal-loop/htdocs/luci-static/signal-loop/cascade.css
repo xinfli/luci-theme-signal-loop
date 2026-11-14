@@ -2925,6 +2925,23 @@ header .nav .dropdown-menu::before {
 	height: 8px;
 }
 
+/* Menu opened by a click/tap. */
+header .nav .dropdown.open > .dropdown-menu {
+	left: 0;
+}
+
+/* Touch devices have no real hover state; showing the menu on the synthetic
+ * hover makes the same tap activate the first entry. Open it on click only. */
+@media (hover: none) {
+	header .nav .dropdown:hover > .dropdown-menu {
+		left: -9999px;
+	}
+
+	header .nav .dropdown.open > .dropdown-menu {
+		left: 0;
+	}
+}
+
 header .pull-right {
 	display: flex;
 	flex-wrap: wrap;

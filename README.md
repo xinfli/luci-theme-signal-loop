@@ -36,6 +36,10 @@ interface.
 | --- | --- |
 | ![Mobile dashboard](screenshots/mobile-dashboard.png) | ![Mobile login](screenshots/login-mobile.png) |
 
+**Mobile navigation** (a tap opens the menu without following the first entry)
+
+![Mobile navigation](screenshots/mobile-menu.png)
+
 ## Layout
 
 | Element | Description |
