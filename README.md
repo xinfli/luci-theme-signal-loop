@@ -26,6 +26,10 @@ interface.
 
 ![System tabs](screenshots/system-tabs.png)
 
+**Statistics graphs** (light chart canvas)
+
+![Statistics graphs](screenshots/statistics-graphs.png)
+
 **Login**
 
 ![Login page](screenshots/login.png)
@@ -49,6 +53,7 @@ interface.
 | Content | Charcoal card with DD-WRT style section headers and dotted rules |
 | Tab bar | Blue submenu bar with rounded tab pills and an orange active tab |
 | Forms | Compact Verdana inputs, blue focus rings, DD-WRT style action bar |
+| Statistics | `rrdtool` charts get a light-gray canvas while keeping their series colours |
 | Footer | LuCI / distribution credits plus the theme credit and mode menu |
 | Login | Centered charcoal dialog with the router hostname and Signal Loop icon above it |
 

@@ -3735,6 +3735,16 @@ div.cbi-value var[data-tooltip],
 }
 
 /* --------------------------------------------------------------------------
+ * Statistics graphs (luci-app-statistics)
+ * --------------------------------------------------------------------------
+ * rrdtool renders its PNG charts on a black canvas, which clashes with the
+ * DD-WRT palette. Invert the wrapper to get a light-gray canvas while keeping
+ * the series colours recognisable. */
+body[data-page^="admin-statistics"] #view .center[data-plugin] {
+	filter: invert(1) hue-rotate(180deg) brightness(.9);
+}
+
+/* --------------------------------------------------------------------------
  * Footer
  * ----------------------------------------------------------------------- */
 footer {
