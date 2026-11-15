@@ -19,7 +19,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-theme-signal-loop
+
+# The CI workflow passes the release/tag version in SIGNAL_LOOP_VERSION.
+# Using a custom variable keeps the override local to this package; passing
+# PKG_VERSION on the make command line would also override the version of
+# every host tool and dependency built by the SDK.
+ifneq ($(SIGNAL_LOOP_VERSION),)
+PKG_VERSION:=$(SIGNAL_LOOP_VERSION)
+else
 PKG_VERSION:=1.0.0
+endif
+
 PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 PKG_MAINTAINER:=Signal Loop Theme Authors

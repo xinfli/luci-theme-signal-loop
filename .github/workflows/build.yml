@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     branches: ["**"]
-    tags: ["v*"]
+    tags: ["v[0-9]*\\.[0-9]*\\.[0-9]*"]
   workflow_dispatch:
     inputs:
       openwrt_version:
@@ -40,6 +40,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Compute version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          short_sha="${GITHUB_SHA::7}"
+          echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
+
+          if [ "$GITHUB_EVENT_NAME" = "push" ] && [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            version="${GITHUB_REF_NAME#v}"
+            if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::Tag ${GITHUB_REF_NAME} is not a stable semantic version (expected vX.Y.Z)"
+              exit 1
+            fi
+            echo "is_release=true" >> "$GITHUB_OUTPUT"
+            echo "artifact_suffix=$version" >> "$GITHUB_OUTPUT"
+          else
+            # APK uses '-' as the package/revision separator, so a version
+            # such as 0.0.0-beta-<sha> is rejected by apk mkpkg. Use an
+            # APK-compatible prerelease and put the short SHA in the artifact
+            # name instead.
+            version="0.0.0_beta${GITHUB_RUN_NUMBER}"
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
+            echo "artifact_suffix=${short_sha}" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Building version: $version"
+
       - name: Install build dependencies
         run: |
           set -euo pipefail
@@ -51,6 +80,7 @@ jobs:
             python3 unzip file rsync wget git zstd
 
       - name: Resolve and download OpenWrt SDK
+        id: sdk
         run: |
           set -euo pipefail
           BASE="https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/${SDK_TARGET}"
@@ -67,6 +97,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/sdk"
           tar -I zstd -xf "$RUNNER_TEMP/sdk.tar.zst" -C "$RUNNER_TEMP/sdk" --strip-components=1
           echo "SDK_DIR=$RUNNER_TEMP/sdk" >> "$GITHUB_ENV"
+          echo "dir=$RUNNER_TEMP/sdk" >> "$GITHUB_OUTPUT"
 
       - name: Add package to SDK
         run: |
@@ -77,7 +108,7 @@ jobs:
           ls -la "$SDK_DIR/package/${PACKAGE_NAME}"
 
       - name: Configure package
-        working-directory: ${{ env.SDK_DIR }}
+        working-directory: ${{ steps.sdk.outputs.dir }}
         run: |
           set -euo pipefail
           [ -f feeds.conf ] || cp feeds.conf.default feeds.conf
@@ -104,17 +135,16 @@ jobs:
           make defconfig
 
       - name: Compile package
-        working-directory: ${{ env.SDK_DIR }}
+        working-directory: ${{ steps.sdk.outputs.dir }}
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          args=(-j"$(nproc)")
-          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
-            args+=("PKG_VERSION=${GITHUB_REF_NAME#v}")
-          fi
-          make "package/${PACKAGE_NAME}/compile" V=s "${args[@]}"
+          make "package/${PACKAGE_NAME}/compile" V=s -j"$(nproc)" \
+            "SIGNAL_LOOP_VERSION=${VERSION}"
 
       - name: Collect artifacts
-        working-directory: ${{ env.SDK_DIR }}
+        working-directory: ${{ steps.sdk.outputs.dir }}
         run: |
           set -euo pipefail
           mkdir -p "$GITHUB_WORKSPACE/dist"
@@ -136,13 +166,13 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.PACKAGE_NAME }}-${{ github.sha }}
+          name: ${{ env.PACKAGE_NAME }}-${{ steps.version.outputs.artifact_suffix }}
           path: dist/*
           if-no-files-found: error
 
       - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        if: steps.version.outputs.is_release == 'true'
+        uses: softprops/action-gh-release@v3
         with:
           files: dist/*
           generate_release_notes: true

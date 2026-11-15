@@ -79,6 +79,31 @@ uci commit luci
 On a fresh install the theme is selected automatically. On upgrade the
 previously selected theme is preserved.
 
+### CI builds and releases
+
+Branch pushes and manual workflow runs produce development packages versioned
+`0.0.0_beta<run_number>` and upload them as artifacts named
+`luci-theme-signal-loop-<7-character-sha>`. They do not create a release.
+
+To publish a release, push a stable semantic-version tag, with leading `v`:
+
+```sh
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The package version is the tag without the leading `v` (for example `1.0.0`),
+and the workflow attaches the `.apk`/`.ipk` plus `sha256sums.txt` to the GitHub
+Release.
+
+The tag must point to a commit that contains this workflow file. Pushing a tag
+that already exists on GitHub does not trigger a new run; delete and recreate
+the tag, or create a new tag.
+
+APK does not accept a hyphenated prerelease such as `0.0.0-beta-<sha>` because
+the hyphen is used as its revision separator, so development builds use the
+`0.0.0_beta<run_number>` form instead.
+
 ### Building into an OpenWrt tree / SDK
 
 Add the repository as a local feed and build the package:
